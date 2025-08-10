@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowLeft, Save, Upload, X } from 'lucide-react'
-import { createProduct, updateProduct } from '../integrations/supabase/client'
+import { createProduct, updateProduct } from '../../integrations/supabase/client'
 import { toast } from 'sonner'
 
 interface Product {

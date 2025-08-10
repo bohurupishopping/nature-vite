@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { ArrowLeft, Edit, Package, TrendingUp, RotateCcw, IndianRupee } from 'lucide-react'
 import {
   getProductSalesHistory,
   getProductReturnsHistory
-} from '../integrations/supabase/client'
+} from '../../integrations/supabase/client'
 import { toast } from 'sonner'
 
 interface Product {

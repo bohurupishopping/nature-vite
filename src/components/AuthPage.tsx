@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import { LogIn, Eye, EyeOff, Building2 } from 'lucide-react'
 import { signIn } from '../integrations/supabase/client'
 

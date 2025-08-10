@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import Sidebar from './Sidebar'
 
 interface LayoutProps {
@@ -20,7 +20,7 @@ export default function Layout({ children, currentPage, onPageChange, onLogout }
         isCollapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
-      
+
       <main className="flex-1 overflow-auto">
         <div className="p-8">
           {children}

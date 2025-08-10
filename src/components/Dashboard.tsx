@@ -1,20 +1,20 @@
-import React, { useState, useEffect } from 'react'
-import { 
-  BarChart3, 
-  Users, 
-  IndianRupee, 
-  Package, 
+import { useState, useEffect } from 'react'
+import {
+  BarChart3,
+  Users,
+  IndianRupee,
+  Package,
   AlertTriangle,
   MapPin,
   ArrowUpRight,
   ArrowDownRight,
   LucideIcon
 } from 'lucide-react'
-import { 
-  getRecentOrders, 
-  getCustomersWithDues, 
-  getLowStockItems, 
-  getRecentMarketVisits 
+import {
+  getRecentOrders,
+  getCustomersWithDues,
+  getLowStockItems,
+  getRecentMarketVisits
 } from '../integrations/supabase/client'
 
 interface StatCardProps {
@@ -95,9 +95,8 @@ export default function Dashboard() {
           <div className="flex items-center space-x-2 mb-2">
             <p className="text-sm font-semibold text-gray-600 uppercase tracking-wide">{title}</p>
             {trend && (
-              <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${
-                trend > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
-              }`}>
+              <div className={`flex items-center space-x-1 px-2 py-1 rounded-full text-xs font-medium ${trend > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
+                }`}>
                 {trend > 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
                 <span>{Math.abs(trend)}%</span>
               </div>
@@ -106,12 +105,11 @@ export default function Dashboard() {
           <p className="text-3xl font-bold text-gray-900 mb-1">{value}</p>
           {subtitle && <p className="text-sm text-gray-500 font-medium">{subtitle}</p>}
         </div>
-        <div className={`p-4 rounded-2xl bg-gradient-to-br ${
-          color === 'blue' ? 'from-blue-500 to-blue-600' :
+        <div className={`p-4 rounded-2xl bg-gradient-to-br ${color === 'blue' ? 'from-blue-500 to-blue-600' :
           color === 'amber' ? 'from-amber-500 to-amber-600' :
-          color === 'red' ? 'from-red-500 to-red-600' :
-          'from-green-500 to-green-600'
-        }`}>
+            color === 'red' ? 'from-red-500 to-red-600' :
+              'from-green-500 to-green-600'
+          }`}>
           <Icon className="w-6 h-6 text-white" />
         </div>
       </div>
@@ -216,11 +214,10 @@ export default function Dashboard() {
                     <IndianRupee className="w-4 h-4 mr-1" />
                     {order.total_amount.toLocaleString('en-IN')}
                   </p>
-                  <p className={`text-sm font-medium px-2 py-1 rounded-full ${
-                    order.status === 'completed' ? 'bg-green-100 text-green-700' :
+                  <p className={`text-sm font-medium px-2 py-1 rounded-full ${order.status === 'completed' ? 'bg-green-100 text-green-700' :
                     order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                    'bg-gray-100 text-gray-700'
-                  }`}>
+                      'bg-gray-100 text-gray-700'
+                    }`}>
                     {order.status}
                   </p>
                 </div>

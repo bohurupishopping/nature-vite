@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react'
-import { 
-  ArrowLeft, 
-  Save, 
-  User, 
-  Phone, 
-  MapPin, 
-  Building, 
+import { useState, useEffect } from 'react'
+import {
+  ArrowLeft,
+  Save,
+  User,
+  Phone,
+  MapPin,
+  Building,
   AlertCircle
 } from 'lucide-react'
-import { createCustomer, updateCustomer, getPriceLists } from '../integrations/supabase/client'
+import { createCustomer, updateCustomer, getPriceLists } from '../../integrations/supabase/client'
 
 interface Customer {
   id: string
@@ -100,7 +100,7 @@ export default function CustomerForm({ customer, onBack, isEdit }: CustomerFormP
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) return
 
     try {
@@ -108,12 +108,27 @@ export default function CustomerForm({ customer, onBack, isEdit }: CustomerFormP
       setError(null)
 
       // Prepare data for submission (remove empty strings)
-      const submitData = Object.fromEntries(
-        Object.entries(formData).map(([key, value]) => [
-          key,
-          value.trim() === '' ? null : value.trim()
-        ])
-      )
+      const submitData: {
+        name: string
+        type?: string
+        contact_person?: string
+        phone_number?: string
+        address?: string
+        street_address?: string
+        village_or_city?: string
+        district?: string
+        price_list_id?: string
+      } = {
+        name: formData.name.trim(),
+        ...(formData.type.trim() && { type: formData.type.trim() }),
+        ...(formData.contact_person.trim() && { contact_person: formData.contact_person.trim() }),
+        ...(formData.phone_number.trim() && { phone_number: formData.phone_number.trim() }),
+        ...(formData.address.trim() && { address: formData.address.trim() }),
+        ...(formData.street_address.trim() && { street_address: formData.street_address.trim() }),
+        ...(formData.village_or_city.trim() && { village_or_city: formData.village_or_city.trim() }),
+        ...(formData.district.trim() && { district: formData.district.trim() }),
+        ...(formData.price_list_id.trim() && { price_list_id: formData.price_list_id.trim() })
+      }
 
       if (isEdit && customer) {
         const { error } = await updateCustomer(customer.id, submitData)
@@ -165,7 +180,7 @@ export default function CustomerForm({ customer, onBack, isEdit }: CustomerFormP
           <ArrowLeft className="w-5 h-5" />
           <span>Back to Customers</span>
         </button>
-        
+
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center">
             <User className="w-6 h-6 text-white" />

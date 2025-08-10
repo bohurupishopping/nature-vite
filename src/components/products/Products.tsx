@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Plus, Edit, Eye, Search, Package, Grid, List } from 'lucide-react'
 import {
   getProducts,
   searchProducts
-} from '../integrations/supabase/client'
+} from '../../integrations/supabase/client'
 import { toast } from 'sonner'
 import ProductForm from './ProductForm'
 import ProductDetail from './ProductDetail'

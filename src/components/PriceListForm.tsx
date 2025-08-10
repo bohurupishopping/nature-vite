@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
 import { createPriceList, updatePriceList } from '../integrations/supabase/client'
 import { toast } from 'sonner'
@@ -47,7 +47,7 @@ export default function PriceListForm({ priceList, onClose, onSuccess }: PriceLi
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    
+
     if (!validateForm()) {
       return
     }
@@ -74,7 +74,7 @@ export default function PriceListForm({ priceList, onClose, onSuccess }: PriceLi
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
-    
+
     // Clear error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }))
@@ -110,9 +110,8 @@ export default function PriceListForm({ priceList, onClose, onSuccess }: PriceLi
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${
-                errors.name ? 'border-red-300' : 'border-gray-300'
-              }`}
+              className={`w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.name ? 'border-red-300' : 'border-gray-300'
+                }`}
               placeholder="Enter price list name"
             />
             {errors.name && (

@@ -1,18 +1,18 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { 
-  ArrowLeft, 
-  Edit, 
-  User, 
-  Phone, 
-  MapPin, 
-  Building, 
+import { useState, useEffect, useCallback } from 'react'
+import {
+  ArrowLeft,
+  Edit,
+  User,
+  Phone,
+  MapPin,
+  Building,
   CreditCard,
   ShoppingCart,
   DollarSign,
   Package,
   AlertCircle
 } from 'lucide-react'
-import { getCustomerById, getCustomerOrders, getCustomerPayments } from '../integrations/supabase/client'
+import { getCustomerById, getCustomerOrders, getCustomerPayments } from '../../integrations/supabase/client'
 
 interface Customer {
   id: string
@@ -58,10 +58,6 @@ export default function CustomerDetail({ customerId, onBack, onEdit }: CustomerD
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'info' | 'orders' | 'payments'>('info')
 
-  useEffect(() => {
-    fetchCustomerData()
-  }, [customerId, fetchCustomerData])
-
   const fetchCustomerData = useCallback(async () => {
     try {
       setLoading(true)
@@ -87,6 +83,10 @@ export default function CustomerDetail({ customerId, onBack, onEdit }: CustomerD
       setLoading(false)
     }
   }, [customerId])
+
+  useEffect(() => {
+    fetchCustomerData()
+  }, [fetchCustomerData])
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -168,7 +168,7 @@ export default function CustomerDetail({ customerId, onBack, onEdit }: CustomerD
           <ArrowLeft className="w-5 h-5" />
           <span>Back to Customers</span>
         </button>
-        
+
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center">
@@ -178,11 +178,10 @@ export default function CustomerDetail({ customerId, onBack, onEdit }: CustomerD
               <h1 className="text-3xl font-bold text-gray-900">{customer.name}</h1>
               <p className="text-gray-600">
                 {customer.type && (
-                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${
-                    customer.type === 'Credit' 
-                      ? 'bg-blue-100 text-blue-800' 
-                      : 'bg-green-100 text-green-800'
-                  }`}>
+                  <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${customer.type === 'Credit'
+                    ? 'bg-blue-100 text-blue-800'
+                    : 'bg-green-100 text-green-800'
+                    }`}>
                     <CreditCard className="w-4 h-4 mr-1" />
                     {customer.type} Customer
                   </span>
@@ -190,7 +189,7 @@ export default function CustomerDetail({ customerId, onBack, onEdit }: CustomerD
               </p>
             </div>
           </div>
-          
+
           <button
             onClick={() => onEdit(customer)}
             className="flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-3 rounded-2xl hover:from-purple-700 hover:to-pink-700 transition-all duration-200 shadow-lg hover:shadow-xl"
@@ -214,7 +213,7 @@ export default function CustomerDetail({ customerId, onBack, onEdit }: CustomerD
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-green-100 rounded-2xl flex items-center justify-center">
@@ -226,21 +225,18 @@ export default function CustomerDetail({ customerId, onBack, onEdit }: CustomerD
             </div>
           </div>
         </div>
-        
+
         <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
           <div className="flex items-center space-x-3">
-            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${
-              outstandingBalance > 0 ? 'bg-red-100' : 'bg-green-100'
-            }`}>
-              <CreditCard className={`w-6 h-6 ${
-                outstandingBalance > 0 ? 'text-red-600' : 'text-green-600'
-              }`} />
+            <div className={`w-10 h-10 rounded-2xl flex items-center justify-center ${outstandingBalance > 0 ? 'bg-red-100' : 'bg-green-100'
+              }`}>
+              <CreditCard className={`w-6 h-6 ${outstandingBalance > 0 ? 'text-red-600' : 'text-green-600'
+                }`} />
             </div>
             <div>
               <p className="text-sm text-gray-600">Outstanding Balance</p>
-              <p className={`text-2xl font-bold ${
-                outstandingBalance > 0 ? 'text-red-600' : 'text-green-600'
-              }`}>
+              <p className={`text-2xl font-bold ${outstandingBalance > 0 ? 'text-red-600' : 'text-green-600'
+                }`}>
                 {formatCurrency(outstandingBalance)}
               </p>
             </div>
@@ -260,11 +256,10 @@ export default function CustomerDetail({ customerId, onBack, onEdit }: CustomerD
               <button
                 key={id}
                 onClick={() => setActiveTab(id as 'info' | 'orders' | 'payments')}
-                className={`flex items-center space-x-2 py-4 border-b-2 font-medium text-sm transition-colors ${
-                  activeTab === id
-                    ? 'border-purple-500 text-purple-600'
-                    : 'border-transparent text-gray-500 hover:text-gray-700'
-                }`}
+                className={`flex items-center space-x-2 py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === id
+                  ? 'border-purple-500 text-purple-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
               >
                 <Icon className="w-5 h-5" />
                 <span>{label}</span>
@@ -364,7 +359,7 @@ export default function CustomerDetail({ customerId, onBack, onEdit }: CustomerD
                 <h3 className="text-lg font-semibold text-gray-900">Order History</h3>
                 <p className="text-sm text-gray-600">{orders.length} total orders</p>
               </div>
-              
+
               {orders.length === 0 ? (
                 <div className="text-center py-12">
                   <Package className="w-16 h-16 text-gray-300 mx-auto mb-4" />
@@ -385,11 +380,10 @@ export default function CustomerDetail({ customerId, onBack, onEdit }: CustomerD
                       </div>
                       <div className="text-right">
                         <p className="font-bold text-gray-900">{formatCurrency(order.total_amount)}</p>
-                        <p className={`text-sm px-2 py-1 rounded-full ${
-                          order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                        <p className={`text-sm px-2 py-1 rounded-full ${order.status === 'completed' ? 'bg-green-100 text-green-800' :
                           order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                          'bg-gray-100 text-gray-800'
-                        }`}>
+                            'bg-gray-100 text-gray-800'
+                          }`}>
                           {order.status}
                         </p>
                       </div>
@@ -407,7 +401,7 @@ export default function CustomerDetail({ customerId, onBack, onEdit }: CustomerD
                 <h3 className="text-lg font-semibold text-gray-900">Payment History</h3>
                 <p className="text-sm text-gray-600">{payments.length} total payments</p>
               </div>
-              
+
               {payments.length === 0 ? (
                 <div className="text-center py-12">
                   <DollarSign className="w-16 h-16 text-gray-300 mx-auto mb-4" />

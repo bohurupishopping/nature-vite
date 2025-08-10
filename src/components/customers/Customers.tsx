@@ -1,16 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react'
-import { 
-  Search, 
-  Plus, 
-  Edit, 
-  Eye, 
-  Users, 
-  Phone, 
+import { useState, useEffect, useCallback } from 'react'
+import {
+  Search,
+  Plus,
+  Edit,
+  Eye,
+  Users,
+  Phone,
   MapPin,
   CreditCard,
   Banknote
 } from 'lucide-react'
-import { getCustomers } from '../integrations/supabase/client'
+import { getCustomers } from '../../integrations/supabase/client'
 import CustomerForm from './CustomerForm'
 import CustomerDetail from './CustomerDetail'
 
@@ -58,7 +58,7 @@ export default function Customers() {
       return
     }
 
-    const filtered = customers.filter(customer => 
+    const filtered = customers.filter(customer =>
       customer.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (customer.phone_number && customer.phone_number.includes(searchTerm))
     )
@@ -125,7 +125,7 @@ export default function Customers() {
   if (viewMode === 'detail' && selectedCustomer) {
     return (
       <CustomerDetail
-        customer={selectedCustomer}
+        customerId={selectedCustomer.id}
         onBack={handleBackToList}
         onEdit={() => handleEditCustomer(selectedCustomer)}
       />
@@ -190,7 +190,7 @@ export default function Customers() {
                 {searchTerm ? 'No customers found' : 'No customers yet'}
               </h3>
               <p className="text-gray-500 mb-6">
-                {searchTerm 
+                {searchTerm
                   ? 'Try adjusting your search terms'
                   : 'Get started by adding your first customer'
                 }
