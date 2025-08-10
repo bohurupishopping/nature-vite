@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback } from 'react'
-import { Plus, Edit, Eye, Search, Package } from 'lucide-react'
+import { Plus, Edit, Eye, Search, Package, Trash2 } from 'lucide-react'
 import {
   getProducts,
-  searchProducts
+  searchProducts,
+  deleteProduct
 } from '../../integrations/supabase/client'
 import { toast } from 'sonner'
 import ProductForm from './ProductForm'
@@ -29,6 +30,7 @@ const Products: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewMode>('list')
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null)
   const [displayMode] = useState<'grid' | 'table'>('grid')
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
 
   useEffect(() => {
     fetchProducts()
@@ -100,6 +102,35 @@ const Products: React.FC = () => {
   const handleBackToList = () => {
     setViewMode('list')
     setSelectedProduct(null)
+  }
+
+  const handleDeleteProduct = async (productId: string) => {
+    try {
+      const { error } = await deleteProduct(productId)
+      if (error) throw error
+
+      setProducts(products.filter(p => p.id !== productId))
+      toast.success('Product deleted successfully')
+      setDeleteConfirm(null)
+    } catch (error: any) {
+      console.error('Error deleting product:', error)
+
+      // Handle foreign key constraint error
+      if (error?.code === '23503' || error?.message?.includes('violates foreign key constraint')) {
+        toast.error('Cannot delete product - it has been used in orders. You can only delete products that have never been ordered.')
+      } else {
+        toast.error('Failed to delete product')
+      }
+      setDeleteConfirm(null)
+    }
+  }
+
+  const confirmDelete = (productId: string) => {
+    setDeleteConfirm(productId)
+  }
+
+  const cancelDelete = () => {
+    setDeleteConfirm(null)
   }
 
   const getStockStatus = (stock: number) => {
@@ -203,17 +234,24 @@ const Products: React.FC = () => {
                       <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleViewProduct(product)}
-                          className="flex-1 bg-gray-100 text-gray-700 px-4 py-2 rounded-2xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2"
+                          className="flex-1 bg-gray-100 text-gray-700 px-3 py-2 rounded-2xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-1"
                         >
                           <Eye className="h-4 w-4" />
                           View
                         </button>
                         <button
                           onClick={() => handleEditProduct(product)}
-                          className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 rounded-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 flex items-center justify-center gap-2"
+                          className="flex-1 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-3 py-2 rounded-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 flex items-center justify-center gap-1"
                         >
                           <Edit className="h-4 w-4" />
                           Edit
+                        </button>
+                        <button
+                          onClick={() => confirmDelete(product.id)}
+                          className="bg-red-100 text-red-600 px-3 py-2 rounded-2xl hover:bg-red-200 transition-colors flex items-center justify-center"
+                          title="Delete Product"
+                        >
+                          <Trash2 className="h-4 w-4" />
                         </button>
                       </div>
                     </div>
@@ -295,6 +333,13 @@ const Products: React.FC = () => {
                               >
                                 <Edit className="w-4 h-4" />
                               </button>
+                              <button
+                                onClick={() => confirmDelete(product.id)}
+                                className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                                title="Delete Product"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
                             </div>
                           </td>
                         </tr>
@@ -338,6 +383,42 @@ const Products: React.FC = () => {
             </div>
           )}
         </>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full mx-4">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center">
+                <Trash2 className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Delete Product</h3>
+                <p className="text-gray-600">This action cannot be undone</p>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to delete this product? This will permanently remove it from your inventory.
+              <br />
+              <span className="text-sm text-amber-600 font-medium">Note: Products that have been used in orders cannot be deleted.</span>
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={cancelDelete}
+                className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-2xl hover:bg-gray-200 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDeleteProduct(deleteConfirm)}
+                className="flex-1 bg-red-600 text-white px-4 py-3 rounded-2xl hover:bg-red-700 transition-colors font-medium"
+              >
+                Delete Product
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

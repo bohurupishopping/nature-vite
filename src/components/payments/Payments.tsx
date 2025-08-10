@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react'
-import { Plus, Filter, Search, DollarSign, Calendar, User, CreditCard } from 'lucide-react'
+import { Plus, Filter, Search, DollarSign, Calendar, User, CreditCard, Trash2 } from 'lucide-react'
 import {
   getPayments,
   getSalesmen,
-  getOrdersForPayment
+  getOrdersForPayment,
+  deletePayment
 } from '../../integrations/supabase/client'
 import { toast } from 'sonner'
 import PaymentForm from './PaymentForm'
@@ -43,12 +44,13 @@ const Payments = () => {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showPaymentForm, setShowPaymentForm] = useState(false)
-  
+
   // Filter states
   const [paymentMethodFilter, setPaymentMethodFilter] = useState('')
   const [statusFilter, setStatusFilter] = useState('')
   const [salesmanFilter, setSalesmanFilter] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
 
   const paymentMethods = ['cash', 'cheque', 'bank_transfer', 'mobile_money']
   const statuses = ['completed', 'pending', 'failed']
@@ -66,11 +68,11 @@ const Payments = () => {
     try {
       setLoading(true)
       const filters: any = {}
-      
+
       if (paymentMethodFilter) filters.paymentMethod = paymentMethodFilter
       if (statusFilter) filters.status = statusFilter
       if (salesmanFilter) filters.salesmanId = salesmanFilter
-      
+
       const { data, error } = await getPayments(filters)
       if (error) throw error
       setPayments(data || [])
@@ -96,6 +98,29 @@ const Payments = () => {
     fetchPayments()
     setShowPaymentForm(false)
     toast.success('Payment recorded successfully!')
+  }
+
+  const handleDeletePayment = async (paymentId: string) => {
+    try {
+      const { error } = await deletePayment(paymentId)
+      if (error) throw error
+
+      setPayments(payments.filter(p => p.id !== paymentId))
+      toast.success('Payment deleted successfully')
+      setDeleteConfirm(null)
+    } catch (error: any) {
+      console.error('Error deleting payment:', error)
+      toast.error('Failed to delete payment')
+      setDeleteConfirm(null)
+    }
+  }
+
+  const confirmDelete = (paymentId: string) => {
+    setDeleteConfirm(paymentId)
+  }
+
+  const cancelDelete = () => {
+    setDeleteConfirm(null)
   }
 
   const getPaymentMethodIcon = (method: string) => {
@@ -252,12 +277,15 @@ const Payments = () => {
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Collected By
                 </th>
+                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {filteredPayments.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                  <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
                     {searchTerm || paymentMethodFilter || statusFilter || salesmanFilter
                       ? 'No payments found matching your filters.'
                       : 'No payments recorded yet.'}
@@ -298,9 +326,8 @@ const Payments = () => {
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        getStatusColor(payment.status)
-                      }`}>
+                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(payment.status)
+                        }`}>
                         {payment.status ? payment.status.charAt(0).toUpperCase() + payment.status.slice(1) : 'Unknown'}
                       </span>
                     </td>
@@ -309,6 +336,15 @@ const Payments = () => {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {payment.profiles?.full_name || 'Direct Payment'}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-right">
+                      <button
+                        onClick={() => confirmDelete(payment.id)}
+                        className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                        title="Delete Payment"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </td>
                   </tr>
                 ))
@@ -324,6 +360,40 @@ const Payments = () => {
           onSuccess={handlePaymentSuccess}
           onCancel={() => setShowPaymentForm(false)}
         />
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full mx-4">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center">
+                <Trash2 className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Delete Payment</h3>
+                <p className="text-gray-600">This action cannot be undone</p>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to delete this payment record? This will permanently remove it from your system.
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={cancelDelete}
+                className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-2xl hover:bg-gray-200 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDeletePayment(deleteConfirm)}
+                className="flex-1 bg-red-600 text-white px-4 py-3 rounded-2xl hover:bg-red-700 transition-colors font-medium"
+              >
+                Delete Payment
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   )

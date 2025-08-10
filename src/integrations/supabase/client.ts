@@ -677,3 +677,22 @@ export const getOrdersForPayment = async (searchTerm?: string) => {
   const { data, error } = await query.order('created_at', { ascending: false })
   return { data, error }
 }
+
+// Delete functions
+export const deleteOrder = async (id: string) => {
+  const { data, error } = await supabase
+    .from('orders')
+    .delete()
+    .eq('id', id)
+
+  return { data, error }
+}
+
+export const deletePayment = async (id: string) => {
+  const { data, error } = await supabase
+    .from('payments')
+    .delete()
+    .eq('id', id)
+
+  return { data, error }
+}

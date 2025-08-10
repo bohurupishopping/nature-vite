@@ -9,9 +9,11 @@ import {
   Calendar,
   DollarSign,
   Filter,
-  X
+  X,
+  Trash2
 } from 'lucide-react'
-import { getOrders, getSalesmen } from '../../integrations/supabase/client'
+import { getOrders, getSalesmen, deleteOrder } from '../../integrations/supabase/client'
+import { toast } from 'sonner'
 import OrderForm from './OrderForm'
 import OrderDetail from './OrderDetail'
 
@@ -67,6 +69,7 @@ export default function Orders() {
     startDate: '',
     endDate: ''
   })
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
 
   const fetchOrders = async () => {
     try {
@@ -133,6 +136,35 @@ export default function Orders() {
     setViewMode('list')
     setSelectedOrder(null)
     fetchOrders() // Refresh the list
+  }
+
+  const handleDeleteOrder = async (orderId: string) => {
+    try {
+      const { error } = await deleteOrder(orderId)
+      if (error) throw error
+
+      setOrders(orders.filter(o => o.id !== orderId))
+      toast.success('Order deleted successfully')
+      setDeleteConfirm(null)
+    } catch (error: any) {
+      console.error('Error deleting order:', error)
+
+      // Handle foreign key constraint error
+      if (error?.code === '23503' || error?.message?.includes('violates foreign key constraint')) {
+        toast.error('Cannot delete order - it has related payments or returns. You can only delete orders with no associated records.')
+      } else {
+        toast.error('Failed to delete order')
+      }
+      setDeleteConfirm(null)
+    }
+  }
+
+  const confirmDelete = (orderId: string) => {
+    setDeleteConfirm(orderId)
+  }
+
+  const cancelDelete = () => {
+    setDeleteConfirm(null)
   }
 
   const handleFilterChange = (key: string, value: string) => {
@@ -223,8 +255,8 @@ export default function Orders() {
             <button
               onClick={() => setShowFilters(!showFilters)}
               className={`flex items-center space-x-2 px-4 py-3 rounded-2xl border transition-all duration-200 ${hasActiveFilters
-                  ? 'bg-blue-50 border-blue-200 text-blue-700'
-                  : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                ? 'bg-blue-50 border-blue-200 text-blue-700'
+                : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
                 }`}
             >
               <Filter className="w-5 h-5" />
@@ -433,6 +465,13 @@ export default function Orders() {
                           >
                             <Edit className="w-4 h-4" />
                           </button>
+                          <button
+                            onClick={() => confirmDelete(order.id)}
+                            className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                            title="Delete Order"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -448,6 +487,42 @@ export default function Orders() {
       {!loading && filteredOrders.length > 0 && (
         <div className="mt-6 text-center text-gray-500">
           Showing {filteredOrders.length} of {orders.length} orders
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full mx-4">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center">
+                <Trash2 className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Delete Order</h3>
+                <p className="text-gray-600">This action cannot be undone</p>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to delete this order? This will permanently remove it from your system.
+              <br />
+              <span className="text-sm text-amber-600 font-medium">Note: Orders with payments or returns cannot be deleted.</span>
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={cancelDelete}
+                className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-2xl hover:bg-gray-200 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDeleteOrder(deleteConfirm)}
+                className="flex-1 bg-red-600 text-white px-4 py-3 rounded-2xl hover:bg-red-700 transition-colors font-medium"
+              >
+                Delete Order
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

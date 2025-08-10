@@ -131,7 +131,7 @@ export default function OrderDetail({ orderId, onBack, onEdit }: OrderDetailProp
 
     try {
       setUpdating(true)
-      const { data, error } = await updateOrderStatus(orderId, newStatus)
+      const { error } = await updateOrderStatus(orderId, newStatus)
       if (error) throw error
 
       setOrder({ ...order, status: newStatus })

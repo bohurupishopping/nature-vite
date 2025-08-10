@@ -8,9 +8,11 @@ import {
   Phone,
   MapPin,
   CreditCard,
-  Banknote
+  Banknote,
+  Trash2
 } from 'lucide-react'
-import { getCustomers } from '../../integrations/supabase/client'
+import { getCustomers, deleteCustomer } from '../../integrations/supabase/client'
+import { toast } from 'sonner'
 import CustomerForm from './CustomerForm'
 import CustomerDetail from './CustomerDetail'
 
@@ -38,6 +40,7 @@ export default function Customers() {
   const [searchTerm, setSearchTerm] = useState('')
   const [viewMode, setViewMode] = useState<ViewMode>('list')
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null)
+  const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
 
   const fetchCustomers = async () => {
     try {
@@ -92,6 +95,35 @@ export default function Customers() {
     setViewMode('list')
     setSelectedCustomer(null)
     fetchCustomers() // Refresh the list
+  }
+
+  const handleDeleteCustomer = async (customerId: string) => {
+    try {
+      const { error } = await deleteCustomer(customerId)
+      if (error) throw error
+
+      setCustomers(customers.filter(c => c.id !== customerId))
+      toast.success('Customer deleted successfully')
+      setDeleteConfirm(null)
+    } catch (error: any) {
+      console.error('Error deleting customer:', error)
+
+      // Handle foreign key constraint error
+      if (error?.code === '23503' || error?.message?.includes('violates foreign key constraint')) {
+        toast.error('Cannot delete customer - they have existing orders. You can only delete customers with no order history.')
+      } else {
+        toast.error('Failed to delete customer')
+      }
+      setDeleteConfirm(null)
+    }
+  }
+
+  const confirmDelete = (customerId: string) => {
+    setDeleteConfirm(customerId)
+  }
+
+  const cancelDelete = () => {
+    setDeleteConfirm(null)
   }
 
   const getTypeIcon = (type: string | null) => {
@@ -286,6 +318,13 @@ export default function Customers() {
                           >
                             <Edit className="w-4 h-4" />
                           </button>
+                          <button
+                            onClick={() => confirmDelete(customer.id)}
+                            className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all duration-200"
+                            title="Delete Customer"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                          </button>
                         </div>
                       </td>
                     </tr>
@@ -301,6 +340,42 @@ export default function Customers() {
       {!loading && filteredCustomers.length > 0 && (
         <div className="mt-6 text-center text-gray-500">
           Showing {filteredCustomers.length} of {customers.length} customers
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-3xl p-6 max-w-md w-full mx-4">
+            <div className="flex items-center space-x-3 mb-4">
+              <div className="w-12 h-12 bg-red-100 rounded-2xl flex items-center justify-center">
+                <Trash2 className="w-6 h-6 text-red-600" />
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Delete Customer</h3>
+                <p className="text-gray-600">This action cannot be undone</p>
+              </div>
+            </div>
+            <p className="text-gray-700 mb-6">
+              Are you sure you want to delete this customer? This will permanently remove them from your database.
+              <br />
+              <span className="text-sm text-amber-600 font-medium">Note: Customers with existing orders cannot be deleted.</span>
+            </p>
+            <div className="flex space-x-3">
+              <button
+                onClick={cancelDelete}
+                className="flex-1 bg-gray-100 text-gray-700 px-4 py-3 rounded-2xl hover:bg-gray-200 transition-colors font-medium"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={() => handleDeleteCustomer(deleteConfirm)}
+                className="flex-1 bg-red-600 text-white px-4 py-3 rounded-2xl hover:bg-red-700 transition-colors font-medium"
+              >
+                Delete Customer
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>
