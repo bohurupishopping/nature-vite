@@ -5,7 +5,7 @@ import Dashboard from './components/Dashboard'
 import Reports from './components/Reports'
 import Customers from './components/customers/Customers'
 import Products from './components/products/Products'
-import PriceLists from './components/PriceLists'
+import PriceLists from './components/price-list/PriceLists'
 import Layout from './components/Layout'
 import { getCurrentUser } from './integrations/supabase/client'
 

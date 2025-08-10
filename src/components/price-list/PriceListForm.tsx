@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { X, Save, Loader2 } from 'lucide-react'
-import { createPriceList, updatePriceList } from '../integrations/supabase/client'
+import { createPriceList, updatePriceList } from '../../integrations/supabase/client'
 import { toast } from 'sonner'
 
 interface PriceList {

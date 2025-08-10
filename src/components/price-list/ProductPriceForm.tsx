@@ -5,7 +5,7 @@ import {
   createProductPrice,
   updateProductPrice,
   getProductPriceByProductAndPriceList
-} from '../integrations/supabase/client'
+} from '../../integrations/supabase/client'
 import { toast } from 'sonner'
 
 interface Product {
