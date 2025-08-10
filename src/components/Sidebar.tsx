@@ -8,7 +8,8 @@ import {
   ChevronRight,
   Users,
   Package,
-  IndianRupee
+  IndianRupee,
+  ShoppingCart
 } from 'lucide-react'
 import { signOut } from '../integrations/supabase/client'
 
@@ -37,6 +38,7 @@ export default function Sidebar({
     { id: 'customers', name: 'Customers', icon: Users },
     { id: 'products', name: 'Products', icon: Package },
     { id: 'price-lists', name: 'Price Lists', icon: IndianRupee },
+    { id: 'orders', name: 'Orders', icon: ShoppingCart },
     { id: 'reports', name: 'Reports', icon: FileText }
   ]
 

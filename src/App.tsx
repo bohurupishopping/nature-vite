@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import AuthPage from './components/AuthPage'
 import Dashboard from './components/Dashboard'
@@ -6,6 +6,7 @@ import Reports from './components/Reports'
 import Customers from './components/customers/Customers'
 import Products from './components/products/Products'
 import PriceLists from './components/price-list/PriceLists'
+import Orders from './components/orders/Orders'
 import Layout from './components/Layout'
 import { getCurrentUser } from './integrations/supabase/client'
 
@@ -69,6 +70,8 @@ function App() {
         return <Products />
       case 'price-lists':
         return <PriceLists />
+      case 'orders':
+        return <Orders />
       case 'reports':
         return <Reports />
       default:

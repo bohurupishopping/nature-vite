@@ -55,10 +55,10 @@ interface MarketVisit {
 
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState({
-    recentOrders: [],
-    customerDues: [],
-    lowStockItems: [],
-    marketVisits: [],
+    recentOrders: [] as Order[],
+    customerDues: [] as CustomerDue[],
+    lowStockItems: [] as LowStockItem[],
+    marketVisits: [] as MarketVisit[],
     loading: true
   })
 

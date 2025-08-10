@@ -460,3 +460,216 @@ export const getProductReturnsHistory = async (productId: string) => {
 
   return { data, error }
 }
+
+// Order management helpers
+export const getOrders = async (filters?: {
+  status?: string
+  salesmanId?: string
+  startDate?: string
+  endDate?: string
+}) => {
+  let query = supabase
+    .from('orders')
+    .select(`
+      *,
+      customers(name, type, contact_person, phone_number),
+      profiles(full_name)
+    `)
+
+  if (filters?.status) {
+    query = query.eq('status', filters.status)
+  }
+  if (filters?.salesmanId) {
+    query = query.eq('salesman_id', filters.salesmanId)
+  }
+  if (filters?.startDate) {
+    query = query.gte('created_at', filters.startDate)
+  }
+  if (filters?.endDate) {
+    query = query.lte('created_at', filters.endDate)
+  }
+
+  const { data, error } = await query.order('created_at', { ascending: false })
+  return { data, error }
+}
+
+export const getOrderById = async (id: string) => {
+  const { data, error } = await supabase
+    .from('orders')
+    .select(`
+      *,
+      customers(name, type, contact_person, phone_number, address),
+      profiles(full_name),
+      order_items(
+        *,
+        products(name, sku, image_url)
+      )
+    `)
+    .eq('id', id)
+    .single()
+
+  return { data, error }
+}
+
+export const createOrder = async (order: {
+  salesman_id: string
+  customer_id: string
+  total_amount: number
+  discount_amount?: number
+  tax_amount?: number
+  shipping_costs?: number
+  order_notes?: string
+  order_type?: string
+  due_date?: string
+}, orderItems: {
+  product_id: string
+  quantity: number
+  unit_price: number
+}[]) => {
+  // First create the order
+  const { data: orderData, error: orderError } = await supabase
+    .from('orders')
+    .insert([order])
+    .select()
+    .single()
+
+  if (orderError) {
+    return { data: null, error: orderError }
+  }
+
+  // Then create the order items
+  const orderItemsWithOrderId = orderItems.map(item => ({
+    ...item,
+    order_id: orderData.id
+  }))
+
+  const { data: itemsData, error: itemsError } = await supabase
+    .from('order_items')
+    .insert(orderItemsWithOrderId)
+    .select()
+
+  if (itemsError) {
+    return { data: null, error: itemsError }
+  }
+
+  return { data: { order: orderData, items: itemsData }, error: null }
+}
+
+export const updateOrderStatus = async (id: string, status: string) => {
+  const { data, error } = await supabase
+    .from('orders')
+    .update({ status })
+    .eq('id', id)
+    .select()
+    .single()
+
+  return { data, error }
+}
+
+export const getSalesmen = async () => {
+  const { data, error } = await supabase
+    .from('profiles')
+    .select('id, full_name, phone_number')
+    .neq('role_id', 1) // Exclude admin role
+    .order('full_name', { ascending: true })
+
+  return { data, error }
+}
+
+export const getOrderPayments = async (orderId: string) => {
+  const { data, error } = await supabase
+    .from('payments')
+    .select(`
+      *,
+      profiles(full_name)
+    `)
+    .eq('order_id', orderId)
+    .order('created_at', { ascending: false })
+
+  return { data, error }
+}
+
+// Payments management helpers
+export const getPayments = async (filters?: {
+  paymentMethod?: string
+  status?: string
+  salesmanId?: string
+  startDate?: string
+  endDate?: string
+}) => {
+  let query = supabase
+    .from('payments')
+    .select(`
+      *,
+      orders(order_number, total_amount, customers(name)),
+      profiles(full_name)
+    `)
+
+  if (filters?.paymentMethod) {
+    query = query.eq('payment_method', filters.paymentMethod)
+  }
+  if (filters?.status) {
+    query = query.eq('status', filters.status)
+  }
+  if (filters?.salesmanId) {
+    query = query.eq('collected_by', filters.salesmanId)
+  }
+  if (filters?.startDate) {
+    query = query.gte('created_at', filters.startDate)
+  }
+  if (filters?.endDate) {
+    query = query.lte('created_at', filters.endDate)
+  }
+
+  const { data, error } = await query.order('created_at', { ascending: false })
+  return { data, error }
+}
+
+export const createPayment = async (payment: {
+  order_id: string
+  amount_received: number
+  payment_method: string
+  payment_type: string
+  notes?: string
+  transaction_reference?: string
+  bank_name?: string
+  cheque_date?: string
+  collected_by?: string
+  status?: string
+}) => {
+  const { data, error } = await supabase
+    .from('payments')
+    .insert([{
+      ...payment,
+      status: payment.status || 'completed'
+    }])
+    .select(`
+      *,
+      orders(order_number, total_amount, customers(name)),
+      profiles(full_name)
+    `)
+    .single()
+
+  return { data, error }
+}
+
+export const getOrdersForPayment = async (searchTerm?: string) => {
+  let query = supabase
+    .from('orders')
+    .select(`
+      id,
+      order_number,
+      total_amount,
+      status,
+      created_at,
+      customers(name, type)
+    `)
+    .in('status', ['pending', 'confirmed', 'partially_paid'])
+
+  if (searchTerm) {
+    query = query.or(`order_number.ilike.%${searchTerm}%,customers.name.ilike.%${searchTerm}%`)
+  }
+
+  const { data, error } = await query.order('created_at', { ascending: false })
+  return { data, error }
+}

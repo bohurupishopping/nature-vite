@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { X, Save, Loader2, Search } from 'lucide-react'
+import { X, Save, Search, DollarSign } from 'lucide-react'
 import {
   searchProducts,
   createProductPrice,
@@ -45,6 +45,7 @@ export default function ProductPriceForm({
   const [searching, setSearching] = useState(false)
   const [showSearchResults, setShowSearchResults] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const [success, setSuccess] = useState(false)
 
   useEffect(() => {
     if (productPrice) {
@@ -159,8 +160,11 @@ export default function ProductPriceForm({
         toast.success('Product price added successfully')
       }
 
-      onSuccess()
-      onClose()
+      setSuccess(true)
+      setTimeout(() => {
+        onSuccess()
+        onClose()
+      }, 1500)
     } catch (error) {
       console.error('Error saving product price:', error)
       toast.error('Failed to save product price')
@@ -178,14 +182,39 @@ export default function ProductPriceForm({
     }
   }
 
+  if (success) {
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-3xl shadow-xl w-full max-w-md">
+          <div className="p-8 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Save className="w-8 h-8 text-green-600" />
+            </div>
+            <h2 className="text-xl font-bold text-green-900 mb-2">
+              Product Price {productPrice ? 'Updated' : 'Added'} Successfully!
+            </h2>
+            <p className="text-green-700">
+              Redirecting back to price lists...
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md mx-4">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-3xl shadow-xl w-full max-w-md">
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-900">
-            {productPrice ? 'Edit Product Price' : 'Add Product Price'}
-          </h2>
+        <div className="flex items-center justify-between p-6 border-b border-gray-100">
+          <div className="flex items-center space-x-3">
+            <div className="w-8 h-8 bg-gradient-to-br from-green-600 to-emerald-600 rounded-xl flex items-center justify-center">
+              <DollarSign className="w-4 h-4 text-white" />
+            </div>
+            <h2 className="text-xl font-semibold text-gray-900">
+              {productPrice ? 'Edit Product Price' : 'Add Product Price'}
+            </h2>
+          </div>
           <button
             onClick={onClose}
             className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
@@ -195,7 +224,7 @@ export default function ProductPriceForm({
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Product Search */}
           <div className="relative">
             <label htmlFor="product" className="block text-sm font-medium text-gray-700 mb-2">
@@ -208,25 +237,27 @@ export default function ProductPriceForm({
                 value={searchQuery}
                 onChange={(e) => handleSearch(e.target.value)}
                 disabled={!!productPrice} // Disable for editing
-                className={`w-full px-4 py-3 pl-10 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.product ? 'border-red-300' : 'border-gray-300'
+                className={`w-full px-4 py-3 pl-10 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.product ? 'border-red-300' : 'border-gray-200'
                   } ${productPrice ? 'bg-gray-50' : ''}`}
                 placeholder="Search for a product..."
               />
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
               {searching && (
-                <Loader2 className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 animate-spin text-gray-400" />
+                <div className="absolute right-3 top-1/2 transform -translate-y-1/2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-gray-400"></div>
+                </div>
               )}
             </div>
 
             {/* Search Results */}
             {showSearchResults && searchResults.length > 0 && (
-              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-xl shadow-lg max-h-60 overflow-y-auto">
+              <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-2xl shadow-lg max-h-60 overflow-y-auto">
                 {searchResults.map((product) => (
                   <button
                     key={product.id}
                     type="button"
                     onClick={() => handleProductSelect(product)}
-                    className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                    className="w-full px-4 py-3 text-left hover:bg-gray-50 border-b border-gray-100 last:border-b-0 rounded-b-2xl"
                   >
                     <div className="font-medium text-gray-900">{product.name}</div>
                     <div className="text-sm text-gray-500">SKU: {product.sku} • ₹{product.price}</div>
@@ -242,10 +273,10 @@ export default function ProductPriceForm({
 
           {/* Selected Product Display */}
           {selectedProduct && (
-            <div className="p-4 bg-blue-50 rounded-xl border border-blue-200">
-              <div className="font-medium text-blue-900">{selectedProduct.name}</div>
-              <div className="text-sm text-blue-700">SKU: {selectedProduct.sku}</div>
-              <div className="text-sm text-blue-700">Default Price: ₹{selectedProduct.price}</div>
+            <div className="p-4 bg-green-50 rounded-2xl border border-green-200">
+              <div className="font-medium text-green-900">{selectedProduct.name}</div>
+              <div className="text-sm text-green-700">SKU: {selectedProduct.sku}</div>
+              <div className="text-sm text-green-700">Default Price: ₹{selectedProduct.price}</div>
             </div>
           )}
 
@@ -255,7 +286,7 @@ export default function ProductPriceForm({
               Price *
             </label>
             <div className="relative">
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+              <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
               <input
                 type="number"
                 id="price"
@@ -263,7 +294,7 @@ export default function ProductPriceForm({
                 onChange={handlePriceChange}
                 step="0.01"
                 min="0"
-                className={`w-full px-4 py-3 pl-8 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.price ? 'border-red-300' : 'border-gray-300'
+                className={`w-full px-4 py-3 pl-10 border rounded-2xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors ${errors.price ? 'border-red-300' : 'border-gray-200'
                   }`}
                 placeholder="0.00"
               />
@@ -278,24 +309,21 @@ export default function ProductPriceForm({
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-3 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors font-medium"
+              className="flex-1 px-6 py-3 border border-gray-200 text-gray-700 rounded-2xl hover:bg-gray-50 transition-colors font-medium"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="flex-1 bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700 transition-colors font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2"
+              className="flex-1 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-2xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center space-x-2 shadow-lg hover:shadow-xl"
             >
               {loading ? (
-                <>
-                  <Loader2 className="w-4 h-4 animate-spin" />
-                  <span>Saving...</span>
-                </>
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
               ) : (
                 <>
-                  <Save className="w-4 h-4" />
-                  <span>{productPrice ? 'Update' : 'Add'}</span>
+                  <Save className="w-5 h-5" />
+                  <span>{productPrice ? 'Update Price' : 'Add Price'}</span>
                 </>
               )}
             </button>

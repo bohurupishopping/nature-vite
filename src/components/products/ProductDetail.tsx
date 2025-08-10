@@ -105,96 +105,51 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onEdit }
   const stockStatus = getStockStatus()
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onBack}
-            className="p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
-          >
-            <ArrowLeft className="h-5 w-5" />
-          </button>
-          <h1 className="text-3xl font-bold text-gray-900">Product Details</h1>
-        </div>
+    <div className="p-6">
+      {/* Header */}
+      <div className="mb-8">
         <button
-          onClick={onEdit}
-          className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 flex items-center gap-2"
+          onClick={onBack}
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
         >
-          <Edit className="h-4 w-4" />
-          Edit Product
+          <ArrowLeft className="w-5 h-5" />
+          <span>Back to Products</span>
         </button>
-      </div>
 
-      {/* Product Overview */}
-      <div className="bg-white rounded-lg shadow-md overflow-hidden">
-        <div className="p-6">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Product Image */}
-            <div className="lg:col-span-1">
-              {product.image_url ? (
-                <img
-                  src={product.image_url}
-                  alt={product.name}
-                  className="w-full h-64 object-cover rounded-lg"
-                />
-              ) : (
-                <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
-                  <Package className="h-16 w-16 text-gray-400" />
-                </div>
-              )}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center">
+              <Package className="w-7 h-7 text-white" />
             </div>
-
-            {/* Product Info */}
-            <div className="lg:col-span-2 space-y-4">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h2>
-                <div className="flex items-center gap-4 mb-4">
-                  <span className="text-lg font-semibold text-green-600">
-                    ₹{product.price.toFixed(2)}
-                  </span>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${stockStatus.color}`}>
-                    {stockStatus.text}
-                  </span>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-500">SKU</label>
-                  <p className="text-lg font-semibold text-gray-900">{product.sku}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-500">Stock Quantity</label>
-                  <p className="text-lg font-semibold text-gray-900">{product.stock_quantity}</p>
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-500">Created Date</label>
-                  <p className="text-lg font-semibold text-gray-900">
-                    {new Date(product.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-              </div>
-
-              {product.description && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-500 mb-2">Description</label>
-                  <p className="text-gray-700 leading-relaxed">{product.description}</p>
-                </div>
-              )}
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
+              <p className="text-gray-600">
+                <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${stockStatus.color}`}>
+                  {stockStatus.text}
+                </span>
+              </p>
             </div>
           </div>
+
+          <button
+            onClick={onEdit}
+            className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl"
+          >
+            <Edit className="w-5 h-5" />
+            <span>Edit Product</span>
+          </button>
         </div>
       </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-green-100 text-green-600">
-              <IndianRupee className="h-6 w-6" />
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-green-100 rounded-2xl flex items-center justify-center">
+              <IndianRupee className="w-6 h-6 text-green-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Total Sales Revenue</p>
+            <div>
+              <p className="text-sm text-gray-600">Total Sales Revenue</p>
               <p className="text-2xl font-bold text-gray-900">
                 ₹{calculateTotalSales().toFixed(2)}
               </p>
@@ -202,13 +157,13 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onEdit }
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-blue-100 text-blue-600">
-              <TrendingUp className="h-6 w-6" />
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center">
+              <TrendingUp className="w-6 h-6 text-blue-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Units Sold</p>
+            <div>
+              <p className="text-sm text-gray-600">Units Sold</p>
               <p className="text-2xl font-bold text-gray-900">
                 {calculateTotalQuantitySold()}
               </p>
@@ -216,13 +171,13 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onEdit }
           </div>
         </div>
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          <div className="flex items-center">
-            <div className="p-3 rounded-full bg-red-100 text-red-600">
-              <RotateCcw className="h-6 w-6" />
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 bg-red-100 rounded-2xl flex items-center justify-center">
+              <RotateCcw className="w-6 h-6 text-red-600" />
             </div>
-            <div className="ml-4">
-              <p className="text-sm font-medium text-gray-500">Units Returned</p>
+            <div>
+              <p className="text-sm text-gray-600">Units Returned</p>
               <p className="text-2xl font-bold text-gray-900">
                 {calculateTotalReturns()}
               </p>
@@ -231,37 +186,85 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onEdit }
         </div>
       </div>
 
+      {/* Product Overview */}
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+        <div className="p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Product Image */}
+            <div className="lg:col-span-1">
+              {product.image_url ? (
+                <img
+                  src={product.image_url}
+                  alt={product.name}
+                  className="w-full h-64 object-cover rounded-2xl"
+                />
+              ) : (
+                <div className="w-full h-64 bg-gray-100 rounded-2xl flex items-center justify-center">
+                  <Package className="h-16 w-16 text-gray-400" />
+                </div>
+              )}
+            </div>
+
+            {/* Product Info */}
+            <div className="lg:col-span-2 space-y-6">
+              <div>
+                <h2 className="text-2xl font-bold text-gray-900 mb-2">{product.name}</h2>
+                <div className="flex items-center gap-4 mb-4">
+                  <span className="text-2xl font-bold text-green-600">
+                    ₹{product.price.toFixed(2)}
+                  </span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-gray-50 rounded-2xl p-4">
+                  <label className="block text-sm font-medium text-gray-600 mb-1">SKU</label>
+                  <p className="font-medium text-gray-900">{product.sku}</p>
+                </div>
+                <div className="bg-gray-50 rounded-2xl p-4">
+                  <label className="block text-sm font-medium text-gray-600 mb-1">Stock Quantity</label>
+                  <p className="font-medium text-gray-900">{product.stock_quantity}</p>
+                </div>
+                <div className="bg-gray-50 rounded-2xl p-4">
+                  <label className="block text-sm font-medium text-gray-600 mb-1">Created Date</label>
+                  <p className="font-medium text-gray-900">
+                    {new Date(product.created_at).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+
+              {product.description && (
+                <div className="bg-gray-50 rounded-2xl p-4">
+                  <label className="block text-sm font-medium text-gray-600 mb-2">Description</label>
+                  <p className="text-gray-700 leading-relaxed">{product.description}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
       {/* Tabs */}
-      <div className="bg-white rounded-lg shadow-md">
-        <div className="border-b border-gray-200">
+      <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+        <div className="border-b border-gray-100">
           <nav className="flex space-x-8 px-6">
-            <button
-              onClick={() => setActiveTab('overview')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'overview'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-            >
-              Overview
-            </button>
-            <button
-              onClick={() => setActiveTab('sales')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'sales'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-            >
-              Sales History ({salesHistory.length})
-            </button>
-            <button
-              onClick={() => setActiveTab('returns')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${activeTab === 'returns'
-                ? 'border-blue-500 text-blue-600'
-                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                }`}
-            >
-              Returns History ({returnsHistory.length})
-            </button>
+            {[
+              { id: 'overview', label: 'Overview', icon: Package },
+              { id: 'sales', label: 'Sales History', icon: TrendingUp },
+              { id: 'returns', label: 'Returns History', icon: RotateCcw }
+            ].map(({ id, label, icon: Icon }) => (
+              <button
+                key={id}
+                onClick={() => setActiveTab(id as 'overview' | 'sales' | 'returns')}
+                className={`flex items-center space-x-2 py-4 border-b-2 font-medium text-sm transition-colors ${activeTab === id
+                  ? 'border-blue-500 text-blue-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700'
+                  }`}
+              >
+                <Icon className="w-5 h-5" />
+                <span>{label} {id === 'sales' && `(${salesHistory.length})`}{id === 'returns' && `(${returnsHistory.length})`}</span>
+              </button>
+            ))}
           </nav>
         </div>
 
@@ -273,24 +276,45 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onEdit }
           ) : (
             <>
               {activeTab === 'overview' && (
-                <div className="space-y-4">
+                <div className="space-y-6">
                   <h3 className="text-lg font-semibold text-gray-900">Product Summary</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-2">Recent Activity</h4>
+                    <div className="bg-gray-50 rounded-2xl p-4">
+                      <h4 className="font-medium text-gray-900 mb-3">Recent Activity</h4>
                       <ul className="space-y-2 text-sm text-gray-600">
-                        <li>• Total orders: {salesHistory.length}</li>
-                        <li>• Total returns: {returnsHistory.length}</li>
-                        <li>• Current stock: {product.stock_quantity} units</li>
-                        <li>• Product created: {new Date(product.created_at).toLocaleDateString()}</li>
+                        <li className="flex justify-between">
+                          <span>Total orders:</span>
+                          <span className="font-medium">{salesHistory.length}</span>
+                        </li>
+                        <li className="flex justify-between">
+                          <span>Total returns:</span>
+                          <span className="font-medium">{returnsHistory.length}</span>
+                        </li>
+                        <li className="flex justify-between">
+                          <span>Current stock:</span>
+                          <span className="font-medium">{product.stock_quantity} units</span>
+                        </li>
+                        <li className="flex justify-between">
+                          <span>Product created:</span>
+                          <span className="font-medium">{new Date(product.created_at).toLocaleDateString()}</span>
+                        </li>
                       </ul>
                     </div>
-                    <div>
-                      <h4 className="font-medium text-gray-900 mb-2">Performance Metrics</h4>
+                    <div className="bg-gray-50 rounded-2xl p-4">
+                      <h4 className="font-medium text-gray-900 mb-3">Performance Metrics</h4>
                       <ul className="space-y-2 text-sm text-gray-600">
-                        <li>• Average sale price: ₹{salesHistory.length > 0 ? (calculateTotalSales() / calculateTotalQuantitySold()).toFixed(2) : '0.00'}</li>
-                        <li>• Return rate: {calculateTotalQuantitySold() > 0 ? ((calculateTotalReturns() / calculateTotalQuantitySold()) * 100).toFixed(1) : '0'}%</li>
-                        <li>• Revenue per unit: ₹{salesHistory.length > 0 ? (calculateTotalSales() / salesHistory.length).toFixed(2) : '0.00'}</li>
+                        <li className="flex justify-between">
+                          <span>Average sale price:</span>
+                          <span className="font-medium">₹{salesHistory.length > 0 ? (calculateTotalSales() / calculateTotalQuantitySold()).toFixed(2) : '0.00'}</span>
+                        </li>
+                        <li className="flex justify-between">
+                          <span>Return rate:</span>
+                          <span className="font-medium">{calculateTotalQuantitySold() > 0 ? ((calculateTotalReturns() / calculateTotalQuantitySold()) * 100).toFixed(1) : '0'}%</span>
+                        </li>
+                        <li className="flex justify-between">
+                          <span>Revenue per unit:</span>
+                          <span className="font-medium">₹{salesHistory.length > 0 ? (calculateTotalSales() / salesHistory.length).toFixed(2) : '0.00'}</span>
+                        </li>
                       </ul>
                     </div>
                   </div>
@@ -299,62 +323,35 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onEdit }
 
               {activeTab === 'sales' && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Sales History</h3>
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900">Sales History</h3>
+                    <p className="text-sm text-gray-600">{salesHistory.length} total sales</p>
+                  </div>
                   {salesHistory.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Order
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Customer
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Quantity
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Unit Price
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Total
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Date
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {salesHistory.map((sale) => (
-                            <tr key={sale.id} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {sale.orders.order_number}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {sale.orders.customers.name}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {sale.quantity}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                ₹{sale.unit_price.toFixed(2)}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-green-600">
-                                ₹{sale.total_price.toFixed(2)}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {new Date(sale.orders.created_at).toLocaleDateString()}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                    <div className="space-y-4">
+                      {salesHistory.map((sale) => (
+                        <div key={sale.id} className="bg-gray-50 rounded-2xl p-4 flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-10 h-10 bg-blue-100 rounded-2xl flex items-center justify-center">
+                              <TrendingUp className="w-5 h-5 text-blue-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-gray-900">Order #{sale.orders.order_number}</p>
+                              <p className="text-sm text-gray-600">{sale.orders.customers.name}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-green-600">₹{sale.total_price.toFixed(2)}</p>
+                            <p className="text-sm text-gray-600">{sale.quantity} units @ ₹{sale.unit_price.toFixed(2)}</p>
+                            <p className="text-xs text-gray-500">{new Date(sale.orders.created_at).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <TrendingUp className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <p>No sales history found for this product.</p>
+                    <div className="text-center py-12">
+                      <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                      <p className="text-gray-500">No sales history found for this product</p>
                     </div>
                   )}
                 </div>
@@ -362,50 +359,34 @@ const ProductDetail: React.FC<ProductDetailProps> = ({ product, onBack, onEdit }
 
               {activeTab === 'returns' && (
                 <div>
-                  <h3 className="text-lg font-semibold text-gray-900 mb-4">Returns History</h3>
+                  <div className="flex items-center justify-between mb-6">
+                    <h3 className="text-lg font-semibold text-gray-900">Returns History</h3>
+                    <p className="text-sm text-gray-600">{returnsHistory.length} total returns</p>
+                  </div>
                   {returnsHistory.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
-                          <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Customer
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Quantity
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Reason
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Date
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
-                          {returnsHistory.map((returnItem) => (
-                            <tr key={returnItem.id} className="hover:bg-gray-50">
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                {returnItem.customers.name}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {returnItem.quantity}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {returnItem.reason || 'No reason provided'}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {new Date(returnItem.created_at).toLocaleDateString()}
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
+                    <div className="space-y-4">
+                      {returnsHistory.map((returnItem) => (
+                        <div key={returnItem.id} className="bg-gray-50 rounded-2xl p-4 flex items-center justify-between">
+                          <div className="flex items-center space-x-4">
+                            <div className="w-10 h-10 bg-red-100 rounded-2xl flex items-center justify-center">
+                              <RotateCcw className="w-5 h-5 text-red-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-gray-900">{returnItem.customers.name}</p>
+                              <p className="text-sm text-gray-600">{returnItem.reason || 'No reason provided'}</p>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                            <p className="font-bold text-gray-900">{returnItem.quantity} units</p>
+                            <p className="text-xs text-gray-500">{new Date(returnItem.created_at).toLocaleDateString()}</p>
+                          </div>
+                        </div>
+                      ))}
                     </div>
                   ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <RotateCcw className="mx-auto h-12 w-12 text-gray-400 mb-4" />
-                      <p>No returns history found for this product.</p>
+                    <div className="text-center py-12">
+                      <RotateCcw className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                      <p className="text-gray-500">No returns history found for this product</p>
                     </div>
                   )}
                 </div>
