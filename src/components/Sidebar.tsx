@@ -1,4 +1,3 @@
-import React from 'react'
 import {
   Home,
   FileText,
@@ -9,7 +8,8 @@ import {
   Users,
   Package,
   IndianRupee,
-  ShoppingCart
+  ShoppingCart,
+  CreditCard
 } from 'lucide-react'
 import { signOut } from '../integrations/supabase/client'
 
@@ -39,11 +39,12 @@ export default function Sidebar({
     { id: 'products', name: 'Products', icon: Package },
     { id: 'price-lists', name: 'Price Lists', icon: IndianRupee },
     { id: 'orders', name: 'Orders', icon: ShoppingCart },
+    { id: 'payments', name: 'Payments', icon: CreditCard },
     { id: 'reports', name: 'Reports', icon: FileText }
   ]
 
   return (
-    <div className={`bg-white border-r border-gray-200 transition-all duration-300 flex flex-col ${isCollapsed ? 'w-20' : 'w-64'
+    <div className={`bg-white border-r border-gray-200 transition-all duration-300 flex flex-col fixed left-0 top-0 h-screen z-10 ${isCollapsed ? 'w-20' : 'w-64'
       }`}>
       {/* Header */}
       <div className="p-6 border-b border-gray-200">

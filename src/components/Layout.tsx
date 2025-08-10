@@ -12,7 +12,7 @@ export default function Layout({ children, currentPage, onPageChange, onLogout }
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
 
   return (
-    <div className="min-h-screen bg-gray-50 flex">
+    <div className="min-h-screen bg-gray-50">
       <Sidebar
         currentPage={currentPage}
         onPageChange={onPageChange}
@@ -21,7 +21,7 @@ export default function Layout({ children, currentPage, onPageChange, onLogout }
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
       />
 
-      <main className="flex-1 overflow-auto">
+      <main className={`transition-all duration-300 ${sidebarCollapsed ? 'ml-20' : 'ml-64'}`}>
         <div className="p-8">
           {children}
         </div>

@@ -152,26 +152,26 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
   }
 
   return (
-    <div className="p-6">
+    <div className="p-4 md:p-6">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-6 md:mb-8">
         <button
           onClick={onCancel}
-          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors"
+          className="flex items-center space-x-2 text-gray-600 hover:text-gray-900 mb-4 transition-colors text-sm md:text-base"
         >
-          <ArrowLeft className="w-5 h-5" />
+          <ArrowLeft className="w-4 h-4 md:w-5 md:h-5" />
           <span>Back to Products</span>
         </button>
 
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center">
-            <Package className="w-6 h-6 text-white" />
+          <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center">
+            <Package className="w-5 h-5 md:w-6 md:h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-xl md:text-2xl font-bold text-gray-900">
               {product ? 'Edit Product' : 'Add New Product'}
             </h1>
-            <p className="text-gray-600">
+            <p className="text-sm md:text-base text-gray-600">
               {product ? 'Update product information' : 'Enter product details below'}
             </p>
           </div>
@@ -179,12 +179,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
       </div>
 
       {/* Form */}
-      <div className="max-w-4xl mx-auto">
-        <form onSubmit={handleSubmit} className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-          <div className="p-8">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div className="max-w-6xl mx-auto">
+        <form onSubmit={handleSubmit} className="bg-white rounded-xl md:rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="p-4 md:p-6 lg:p-8">
+            <div className="grid grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8">
               {/* Left Column */}
-              <div className="space-y-6">
+              <div className="space-y-4 md:space-y-6">
                 {/* Product Name */}
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
@@ -195,7 +195,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
                     id="name"
                     value={formData.name}
                     onChange={(e) => handleInputChange('name', e.target.value)}
-                    className={`w-full px-4 py-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.name ? 'border-red-500' : 'border-gray-200'
+                    className={`w-full px-3 py-2 md:px-4 md:py-3 text-sm md:text-base border rounded-lg md:rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.name ? 'border-red-500' : 'border-gray-200'
                       }`}
                     placeholder="Enter product name"
                   />
@@ -214,7 +214,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
                     id="sku"
                     value={formData.sku}
                     onChange={(e) => handleInputChange('sku', e.target.value.toUpperCase())}
-                    className={`w-full px-4 py-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.sku ? 'border-red-500' : 'border-gray-200'
+                    className={`w-full px-3 py-2 md:px-4 md:py-3 text-sm md:text-base border rounded-lg md:rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.sku ? 'border-red-500' : 'border-gray-200'
                       }`}
                     placeholder="Enter SKU (e.g., PROD-001)"
                   />
@@ -229,7 +229,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
                     Price *
                   </label>
                   <div className="relative">
-                    <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500">₹</span>
+                    <span className="absolute left-3 md:left-4 top-1/2 transform -translate-y-1/2 text-gray-500 text-sm md:text-base">₹</span>
                     <input
                       type="number"
                       id="price"
@@ -237,7 +237,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
                       min="0"
                       value={formData.price}
                       onChange={(e) => handleInputChange('price', parseFloat(e.target.value) || 0)}
-                      className={`w-full pl-10 pr-4 py-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.price ? 'border-red-500' : 'border-gray-200'
+                      className={`w-full pl-8 md:pl-10 pr-3 py-2 md:pr-4 md:py-3 text-sm md:text-base border rounded-lg md:rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.price ? 'border-red-500' : 'border-gray-200'
                         }`}
                       placeholder="0.00"
                     />
@@ -258,7 +258,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
                     min="0"
                     value={formData.stock_quantity}
                     onChange={(e) => handleInputChange('stock_quantity', parseInt(e.target.value) || 0)}
-                    className={`w-full px-4 py-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.stock_quantity ? 'border-red-500' : 'border-gray-200'
+                    className={`w-full px-3 py-2 md:px-4 md:py-3 text-sm md:text-base border rounded-lg md:rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.stock_quantity ? 'border-red-500' : 'border-gray-200'
                       }`}
                     placeholder="0"
                   />
@@ -269,7 +269,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
               </div>
 
               {/* Right Column */}
-              <div className="space-y-6">
+              <div className="space-y-4 md:space-y-6">
                 {/* Description */}
                 <div>
                   <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
@@ -280,7 +280,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
                     value={formData.description}
                     onChange={(e) => handleInputChange('description', e.target.value)}
                     rows={4}
-                    className="w-full px-4 py-3 border border-gray-200 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                    className="w-full px-3 py-2 md:px-4 md:py-3 text-sm md:text-base border border-gray-200 rounded-lg md:rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                     placeholder="Enter product description"
                   />
                 </div>
@@ -290,13 +290,13 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     Product Image
                   </label>
-                  <div className="space-y-4">
+                  <div className="space-y-3 md:space-y-4">
                     <div className="flex gap-2">
                       <input
                         type="url"
                         value={formData.image_url}
                         onChange={(e) => handleImageUrlChange(e.target.value)}
-                        className={`flex-1 px-4 py-3 border rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.image_url ? 'border-red-500' : 'border-gray-200'
+                        className={`flex-1 px-3 py-2 md:px-4 md:py-3 text-sm md:text-base border rounded-lg md:rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors.image_url ? 'border-red-500' : 'border-gray-200'
                           }`}
                         placeholder="Enter image URL"
                       />
@@ -304,9 +304,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
                         <button
                           type="button"
                           onClick={clearImageUrl}
-                          className="px-4 py-3 text-gray-500 hover:text-gray-700 border border-gray-200 rounded-2xl hover:bg-gray-50"
+                          className="px-3 py-2 md:px-4 md:py-3 text-gray-500 hover:text-gray-700 border border-gray-200 rounded-lg md:rounded-2xl hover:bg-gray-50"
                         >
-                          <X className="h-5 w-5" />
+                          <X className="h-4 w-4 md:h-5 md:w-5" />
                         </button>
                       )}
                     </div>
@@ -318,7 +318,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
                     {formData.image_url && isValidUrl(formData.image_url) && (
                       <div className="mt-2">
                         <p className="text-sm text-gray-600 mb-2">Preview:</p>
-                        <div className="w-32 h-32 border border-gray-200 rounded-2xl overflow-hidden">
+                        <div className="w-24 h-24 md:w-32 md:h-32 border border-gray-200 rounded-lg md:rounded-2xl overflow-hidden">
                           <img
                             src={formData.image_url}
                             alt="Product preview"
@@ -343,12 +343,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
           </div>
 
           {/* Form Actions */}
-          <div className="bg-gray-50 px-8 py-6 border-t border-gray-100">
-            <div className="flex items-center justify-end space-x-4">
+          <div className="bg-gray-50 px-4 py-4 md:px-6 lg:px-8 md:py-6 border-t border-gray-100">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end space-y-3 sm:space-y-0 sm:space-x-4">
               <button
                 type="button"
                 onClick={onCancel}
-                className="px-6 py-3 border border-gray-200 text-gray-700 rounded-2xl hover:bg-gray-50 transition-colors"
+                className="px-4 py-2 md:px-6 md:py-3 text-sm md:text-base border border-gray-200 text-gray-700 rounded-lg md:rounded-2xl hover:bg-gray-50 transition-colors"
                 disabled={loading}
               >
                 Cancel
@@ -356,7 +356,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
               <button
                 type="submit"
                 disabled={loading}
-                className="flex items-center space-x-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-3 rounded-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2 md:px-6 md:py-3 text-sm md:text-base rounded-lg md:rounded-2xl hover:from-blue-700 hover:to-indigo-700 transition-all duration-200 shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? (
                   <>
@@ -365,7 +365,7 @@ const ProductForm: React.FC<ProductFormProps> = ({ product, onSave, onCancel }) 
                   </>
                 ) : (
                   <>
-                    <Save className="w-5 h-5" />
+                    <Save className="w-4 h-4 md:w-5 md:h-5" />
                     <span>{product ? 'Update Product' : 'Create Product'}</span>
                   </>
                 )}

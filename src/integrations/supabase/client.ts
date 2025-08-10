@@ -309,6 +309,9 @@ export const getProductPricesByPriceList = async (priceListId: string) => {
   return { data, error }
 }
 
+// Alias for getProductPricesByPriceList to match requirements
+export const getProductPrices = getProductPricesByPriceList
+
 export const createProductPrice = async (productPrice: {
   price_list_id: string
   product_id: string
@@ -667,7 +670,8 @@ export const getOrdersForPayment = async (searchTerm?: string) => {
     .in('status', ['pending', 'confirmed', 'partially_paid'])
 
   if (searchTerm) {
-    query = query.or(`order_number.ilike.%${searchTerm}%,customers.name.ilike.%${searchTerm}%`)
+    // Use textSearch or ilike on order_number only, as filtering on related table fields in .or() is complex
+    query = query.ilike('order_number', `%${searchTerm}%`)
   }
 
   const { data, error } = await query.order('created_at', { ascending: false })

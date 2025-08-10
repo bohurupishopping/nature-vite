@@ -7,6 +7,7 @@ import Customers from './components/customers/Customers'
 import Products from './components/products/Products'
 import PriceLists from './components/price-list/PriceLists'
 import Orders from './components/orders/Orders'
+import Payments from './components/payments/Payments'
 import Layout from './components/Layout'
 import { getCurrentUser } from './integrations/supabase/client'
 
@@ -72,6 +73,8 @@ function App() {
         return <PriceLists />
       case 'orders':
         return <Orders />
+      case 'payments':
+        return <Payments />
       case 'reports':
         return <Reports />
       default:
