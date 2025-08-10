@@ -31,8 +31,8 @@ export const getRecentOrders = async () => {
     .from('orders')
     .select(`
       *,
-      customers(name, email),
-      profiles(first_name, last_name)
+      customers(name, type, contact_person),
+      profiles(full_name)
     `)
     .order('created_at', { ascending: false })
     .limit(10)
@@ -62,7 +62,7 @@ export const getRecentMarketVisits = async () => {
     .from('market_visits')
     .select(`
       *,
-      profiles(first_name, last_name),
+      profiles(full_name),
       customers(name)
     `)
     .order('created_at', { ascending: false })
@@ -82,8 +82,8 @@ export const getSalesReport = async (filters: {
     .select(`
       *,
       order_items(*),
-      customers(name, email, phone),
-      profiles(first_name, last_name)
+      customers(name, type, contact_person, phone_number),
+      profiles(full_name)
     `)
 
   if (filters.startDate) {
@@ -109,7 +109,7 @@ export const getPaymentsReport = async (filters: {
     .from('payments')
     .select(`
       *,
-      customers(name, email)
+      customers(name, type, contact_person)
     `)
 
   if (filters.startDate) {
@@ -142,6 +142,140 @@ export const getInventoryReport = async () => {
 export const getDetailedSalesReport = async (startDate: string, endDate: string) => {
   const { data, error } = await supabase
     .rpc('generate_detailed_sales_report', {
+      p_start_date: startDate,
+      p_end_date: endDate
+    })
+
+  return { data, error }
+}
+
+// New Report Functions from generate_report.sql
+
+// Get target periods for dropdown selection
+export const getTargetPeriods = async () => {
+  const { data, error } = await supabase
+    .from('target_periods')
+    .select('*')
+    .order('start_date', { ascending: false })
+
+  return { data, error }
+}
+
+// 1. Sales vs Target Achievement Report
+export const getSalesVsTargetAchievement = async (targetPeriodId: string) => {
+  const { data, error } = await supabase
+    .rpc('report_sales_vs_target_achievement', {
+      p_target_period_id: targetPeriodId
+    })
+
+  return { data, error }
+}
+
+// 2. Salesman Performance vs Target Report
+export const getSalesmanPerformanceVsTarget = async (targetPeriodId: string) => {
+  const { data, error } = await supabase
+    .rpc('report_salesman_performance_vs_target', {
+      p_target_period_id: targetPeriodId
+    })
+
+  return { data, error }
+}
+
+// 3. Product Performance vs Target Report
+export const getProductPerformanceVsTarget = async (targetPeriodId: string) => {
+  const { data, error } = await supabase
+    .rpc('report_product_performance_vs_target', {
+      p_target_period_id: targetPeriodId
+    })
+
+  return { data, error }
+}
+
+// 4. Customer Performance vs Target Report
+export const getCustomerPerformanceVsTarget = async (targetPeriodId: string) => {
+  const { data, error } = await supabase
+    .rpc('report_customer_performance_vs_target', {
+      p_target_period_id: targetPeriodId
+    })
+
+  return { data, error }
+}
+
+// 5. District Performance vs Target Report
+export const getDistrictPerformanceVsTarget = async (targetPeriodId: string) => {
+  const { data, error } = await supabase
+    .rpc('report_district_performance_vs_target', {
+      p_target_period_id: targetPeriodId
+    })
+
+  return { data, error }
+}
+
+// 6. Sales Trend Reports
+export const getSalesTrendDaily = async (startDate: string, endDate: string) => {
+  const { data, error } = await supabase
+    .rpc('report_sales_trend_daily', {
+      p_start_date: startDate,
+      p_end_date: endDate
+    })
+
+  return { data, error }
+}
+
+export const getSalesTrendWeekly = async (startDate: string, endDate: string) => {
+  const { data, error } = await supabase
+    .rpc('report_sales_trend_weekly', {
+      p_start_date: startDate,
+      p_end_date: endDate
+    })
+
+  return { data, error }
+}
+
+export const getSalesTrendMonthly = async (startDate: string, endDate: string) => {
+  const { data, error } = await supabase
+    .rpc('report_sales_trend_monthly', {
+      p_start_date: startDate,
+      p_end_date: endDate
+    })
+
+  return { data, error }
+}
+
+// 7. Top Customers Report
+export const getTopCustomers = async (startDate: string, endDate: string, limit: number = 20) => {
+  const { data, error } = await supabase
+    .rpc('report_top_customers', {
+      p_start_date: startDate,
+      p_end_date: endDate,
+      p_limit: limit
+    })
+
+  return { data, error }
+}
+
+// 8. Customer Purchase History Report
+export const getCustomerPurchaseHistory = async (customerId: string) => {
+  const { data, error } = await supabase
+    .rpc('report_customer_purchase_history', {
+      p_customer_id: customerId
+    })
+
+  return { data, error }
+}
+
+// 9. Customer Dues and Outstanding Balance Report
+export const getCustomerDuesAndBalances = async () => {
+  const { data, error } = await supabase
+    .rpc('report_customer_dues_and_balances')
+
+  return { data, error }
+}
+
+// 10. New vs Existing Customer Sales Analysis
+export const getNewVsExistingCustomerSales = async (startDate: string, endDate: string) => {
+  const { data, error } = await supabase
+    .rpc('report_new_vs_existing_customer_sales', {
       p_start_date: startDate,
       p_end_date: endDate
     })
@@ -233,7 +367,7 @@ export const getCustomerOrders = async (customerId: string) => {
     .from('orders')
     .select(`
       *,
-      profiles(first_name, last_name),
+      profiles(full_name),
       order_items(
         *,
         products(name, sku)

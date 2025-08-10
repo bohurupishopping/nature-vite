@@ -30,7 +30,7 @@ interface Order {
   total_amount: number
   status: string
   customers?: { name: string }
-  profiles?: { first_name: string; last_name: string }
+  profiles?: { full_name: string }
 }
 
 interface CustomerDue {
@@ -50,7 +50,7 @@ interface MarketVisit {
   visit_date: string
   notes?: string
   customers?: { name: string }
-  profiles?: { first_name: string; last_name: string }
+  profiles?: { full_name: string }
 }
 
 export default function Dashboard() {
@@ -156,7 +156,7 @@ export default function Dashboard() {
         <StatCard
           icon={IndianRupee}
           title="Total Revenue"
-          value={`₹${totalRevenue.toLocaleString('en-IN')}`}
+          value={`₹${(totalRevenue || 0).toLocaleString('en-IN')}`}
           subtitle="From recent orders"
           trend={8}
           color="green"
@@ -164,7 +164,7 @@ export default function Dashboard() {
         <StatCard
           icon={Users}
           title="Pending Dues"
-          value={`₹${totalDues.toLocaleString('en-IN')}`}
+          value={`₹${(totalDues || 0).toLocaleString('en-IN')}`}
           subtitle={`${dashboardData.customerDues.length} customers`}
           trend={-5}
           color="amber"
@@ -205,14 +205,14 @@ export default function Dashboard() {
                       {order.customers?.name || 'Unknown Customer'}
                     </p>
                     <p className="text-sm text-gray-500">
-                      {order.profiles?.first_name} {order.profiles?.last_name}
+                      {order.profiles?.full_name || 'Unknown'}
                     </p>
                   </div>
                 </div>
                 <div className="text-right">
                   <p className="font-bold text-gray-900 flex items-center">
                     <IndianRupee className="w-4 h-4 mr-1" />
-                    {order.total_amount.toLocaleString('en-IN')}
+                    {(order.total_amount || 0).toLocaleString('en-IN')}
                   </p>
                   <p className={`text-sm font-medium px-2 py-1 rounded-full ${order.status === 'completed' ? 'bg-green-100 text-green-700' :
                     order.status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
@@ -254,7 +254,7 @@ export default function Dashboard() {
                 <div className="text-right">
                   <p className="font-bold text-amber-700 flex items-center">
                     <IndianRupee className="w-4 h-4 mr-1" />
-                    {due.total_due.toLocaleString('en-IN')}
+                    {(due.total_due || 0).toLocaleString('en-IN')}
                   </p>
                 </div>
               </div>
@@ -332,7 +332,7 @@ export default function Dashboard() {
                 </div>
               </div>
               <p className="text-sm text-gray-600 mb-2">
-                <span className="font-medium">Salesman:</span> {visit.profiles?.first_name} {visit.profiles?.last_name}
+                <span className="font-medium">Salesman:</span> {visit.profiles?.full_name || 'Unknown'}
               </p>
               {visit.notes && (
                 <p className="text-sm text-gray-500 italic bg-white p-3 rounded-xl">
