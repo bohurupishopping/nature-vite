@@ -2,10 +2,8 @@ import { useState, useEffect } from 'react'
 import {
   ArrowLeft,
   Save,
-  Plus,
   Trash2,
   Search,
-  User,
   Users,
   Package,
   Calculator,
@@ -58,7 +56,7 @@ interface OrderFormProps {
   isEdit?: boolean
 }
 
-export default function OrderForm({ order, onBack, isEdit = false }: OrderFormProps) {
+export default function OrderForm({ onBack, isEdit = false }: OrderFormProps) {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [customers, setCustomers] = useState<Customer[]>([])
@@ -280,7 +278,7 @@ export default function OrderForm({ order, onBack, isEdit = false }: OrderFormPr
         unit_price: item.unit_price
       }))
 
-      const { data, error: createError } = await createOrder(orderData, orderItemsData)
+      const { error: createError } = await createOrder(orderData, orderItemsData)
 
       if (createError) throw createError
 

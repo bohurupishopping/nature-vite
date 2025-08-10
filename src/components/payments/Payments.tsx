@@ -47,6 +47,8 @@ interface Salesman {
   phone_number?: string
 }
 
+type ViewMode = 'list' | 'create'
+
 export default function Payments() {
   const [payments, setPayments] = useState<Payment[]>([])
   const [filteredPayments, setFilteredPayments] = useState<Payment[]>([])
@@ -54,7 +56,7 @@ export default function Payments() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchTerm, setSearchTerm] = useState('')
-  const [showPaymentForm, setShowPaymentForm] = useState(false)
+  const [viewMode, setViewMode] = useState<ViewMode>('list')
   const [showFilters, setShowFilters] = useState(false)
   const [filters, setFilters] = useState({
     paymentMethod: '',
@@ -123,9 +125,13 @@ export default function Payments() {
     filterPayments()
   }, [filterPayments])
 
-  const handlePaymentSuccess = () => {
-    fetchPayments()
-    setShowPaymentForm(false)
+  const handleCreatePayment = () => {
+    setViewMode('create')
+  }
+
+  const handleBackToList = () => {
+    setViewMode('list')
+    fetchPayments() // Refresh the list
     toast.success('Payment recorded successfully!')
   }
 
@@ -194,6 +200,14 @@ export default function Payments() {
 
   const hasActiveFilters = filters.paymentMethod || filters.status || filters.salesmanId || filters.startDate || filters.endDate
 
+  if (viewMode === 'create') {
+    return (
+      <PaymentForm
+        onBack={handleBackToList}
+      />
+    )
+  }
+
   return (
     <div className="p-6">
       {/* Header */}
@@ -239,7 +253,7 @@ export default function Payments() {
               )}
             </button>
             <button
-              onClick={() => setShowPaymentForm(true)}
+              onClick={handleCreatePayment}
               className="flex items-center space-x-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-2xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               <Plus className="w-5 h-5" />
@@ -369,7 +383,7 @@ export default function Payments() {
               </p>
               {!searchTerm && !hasActiveFilters && (
                 <button
-                  onClick={() => setShowPaymentForm(true)}
+                  onClick={handleCreatePayment}
                   className="inline-flex items-center space-x-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-6 py-3 rounded-2xl hover:from-green-700 hover:to-emerald-700 transition-all duration-200"
                 >
                   <Plus className="w-5 h-5" />
@@ -478,13 +492,7 @@ export default function Payments() {
         </div>
       )}
 
-      {/* Payment Form Modal */}
-      {showPaymentForm && (
-        <PaymentForm
-          onSuccess={handlePaymentSuccess}
-          onCancel={() => setShowPaymentForm(false)}
-        />
-      )}
+
 
       {/* Delete Confirmation Modal */}
       {deleteConfirm && (
