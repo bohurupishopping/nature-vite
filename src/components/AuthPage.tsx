@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { LogIn, Eye, EyeOff, Building2 } from 'lucide-react'
+import { LogIn, Eye, EyeOff } from 'lucide-react'
 import { signIn } from '../integrations/supabase/client'
 
 interface AuthPageProps {

@@ -5,7 +5,7 @@ interface LayoutProps {
   children: React.ReactNode
   currentPage: string
   onPageChange: (page: string) => void
-  onLogout: () => void
+  onLogout: () => Promise<void>
 }
 
 export default function Layout({ children, currentPage, onPageChange, onLogout }: LayoutProps) {

@@ -2,7 +2,6 @@ import {
   Home,
   FileText,
   LogOut,
-  Building2,
   ChevronLeft,
   ChevronRight,
   Users,
@@ -11,12 +10,11 @@ import {
   ShoppingCart,
   CreditCard
 } from 'lucide-react'
-import { signOut } from '../integrations/supabase/client'
 
 interface SidebarProps {
   currentPage: string
   onPageChange: (page: string) => void
-  onLogout: () => void
+  onLogout: () => Promise<void>
   isCollapsed: boolean
   onToggleCollapse: () => void
 }
@@ -29,8 +27,7 @@ export default function Sidebar({
   onToggleCollapse
 }: SidebarProps) {
   const handleLogout = async () => {
-    await signOut()
-    onLogout()
+    await onLogout()
   }
 
   const navigation = [

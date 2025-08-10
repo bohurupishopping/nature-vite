@@ -9,7 +9,7 @@ import PriceLists from './components/price-list/PriceLists'
 import Orders from './components/orders/Orders'
 import Payments from './components/payments/Payments'
 import Layout from './components/Layout'
-import { getCurrentUser } from './integrations/supabase/client'
+import { getCurrentUser, signOut, supabase } from './integrations/supabase/client'
 
 function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
@@ -30,6 +30,20 @@ function App() {
     }
 
     checkAuth()
+
+    // Listen for auth state changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event, session) => {
+        if (event === 'SIGNED_IN' && session) {
+          setIsAuthenticated(true)
+        } else if (event === 'SIGNED_OUT') {
+          setIsAuthenticated(false)
+        }
+        setLoading(false)
+      }
+    )
+
+    return () => subscription.unsubscribe()
   }, [])
 
   const handleLogin = () => {
@@ -37,9 +51,14 @@ function App() {
     setCurrentPage('dashboard')
   }
 
-  const handleLogout = () => {
-    setIsAuthenticated(false)
-    setCurrentPage('dashboard')
+  const handleLogout = async () => {
+    try {
+      await signOut()
+      // Auth state listener will handle setting isAuthenticated to false
+      setCurrentPage('dashboard')
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
   }
 
   if (loading) {
