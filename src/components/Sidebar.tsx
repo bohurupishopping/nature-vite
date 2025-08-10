@@ -51,19 +51,23 @@ export default function Sidebar({
         <div className="flex items-center justify-between">
           {!isCollapsed && (
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center">
-                <Building2 className="w-6 h-6 text-white" />
-              </div>
+              <img
+                src="/logo.webp"
+                alt="Nature CMS Logo"
+                className="w-10 h-10 rounded-2xl object-cover"
+              />
               <div>
                 <h1 className="text-lg font-bold text-gray-900">Nature</h1>
-                <p className="text-xs text-gray-500 font-medium">Manager</p>
+                <p className="text-xs text-gray-500 font-medium">CMS</p>
               </div>
             </div>
           )}
           {isCollapsed && (
-            <div className="w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-2xl flex items-center justify-center mx-auto">
-              <Building2 className="w-6 h-6 text-white" />
-            </div>
+            <img
+              src="/logo.webp"
+              alt="Nature CMS Logo"
+              className="w-10 h-10 rounded-2xl object-cover mx-auto"
+            />
           )}
           <button
             onClick={onToggleCollapse}

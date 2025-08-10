@@ -37,11 +37,15 @@ export default function AuthPage({ onLogin }: AuthPageProps) {
       <div className="w-full max-w-md">
         {/* Logo Section */}
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-3xl shadow-lg mb-6">
-            <Building2 className="w-10 h-10 text-white" />
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl shadow-lg mb-6 overflow-hidden">
+            <img
+              src="/logo.webp"
+              alt="Nature CMS Logo"
+              className="w-full h-full object-cover"
+            />
           </div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent mb-2">
-            Business Manager
+            Nature CMS
           </h1>
           <p className="text-gray-600 font-medium">Sign in to your dashboard</p>
         </div>
