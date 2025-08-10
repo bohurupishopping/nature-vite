@@ -1,11 +1,14 @@
 import React from 'react'
-import { 
-  Home, 
-  FileText, 
-  LogOut, 
+import {
+  Home,
+  FileText,
+  LogOut,
   Building2,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Users,
+  Package,
+  IndianRupee
 } from 'lucide-react'
 import { signOut } from '../integrations/supabase/client'
 
@@ -17,12 +20,12 @@ interface SidebarProps {
   onToggleCollapse: () => void
 }
 
-export default function Sidebar({ 
-  currentPage, 
-  onPageChange, 
-  onLogout, 
-  isCollapsed, 
-  onToggleCollapse 
+export default function Sidebar({
+  currentPage,
+  onPageChange,
+  onLogout,
+  isCollapsed,
+  onToggleCollapse
 }: SidebarProps) {
   const handleLogout = async () => {
     await signOut()
@@ -31,13 +34,15 @@ export default function Sidebar({
 
   const navigation = [
     { id: 'dashboard', name: 'Dashboard', icon: Home },
+    { id: 'customers', name: 'Customers', icon: Users },
+    { id: 'products', name: 'Products', icon: Package },
+    { id: 'price-lists', name: 'Price Lists', icon: IndianRupee },
     { id: 'reports', name: 'Reports', icon: FileText }
   ]
 
   return (
-    <div className={`bg-white border-r border-gray-200 transition-all duration-300 flex flex-col ${
-      isCollapsed ? 'w-20' : 'w-64'
-    }`}>
+    <div className={`bg-white border-r border-gray-200 transition-all duration-300 flex flex-col ${isCollapsed ? 'w-20' : 'w-64'
+      }`}>
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center justify-between">
@@ -75,16 +80,15 @@ export default function Sidebar({
         {navigation.map((item) => {
           const Icon = item.icon
           const isActive = currentPage === item.id
-          
+
           return (
             <button
               key={item.id}
               onClick={() => onPageChange(item.id)}
-              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl font-medium transition-all duration-200 ${
-                isActive
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
-                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
-              }`}
+              className={`w-full flex items-center space-x-3 px-4 py-3 rounded-2xl font-medium transition-all duration-200 ${isActive
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg'
+                : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                }`}
             >
               <Icon className={`w-5 h-5 ${isActive ? 'text-white' : 'text-gray-500'}`} />
               {!isCollapsed && <span>{item.name}</span>}

@@ -258,7 +258,7 @@ export interface Database {
     }
     Functions: {
       get_customers_with_due_amounts: {
-        Args: {}
+        Args: Record<string, never>
         Returns: {
           customer_id: string
           customer_name: string

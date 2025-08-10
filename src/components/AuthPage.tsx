@@ -25,7 +25,7 @@ export default function AuthPage({ onLogin }: AuthPageProps) {
       } else {
         onLogin()
       }
-    } catch (err) {
+    } catch {
       setError('An unexpected error occurred')
     } finally {
       setLoading(false)

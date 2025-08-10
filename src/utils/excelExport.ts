@@ -143,15 +143,44 @@ const createSummarySheet = (data: DetailedSalesReportItem[]) => {
     return worksheet
 }
 
-export const exportSalesReportToExcel = (data: any[], reportType: string) => {
+interface Order {
+    id: string
+    customers?: { name?: string; email?: string }
+    profiles?: { first_name?: string; last_name?: string }
+    total_amount: number
+    status: string
+    created_at: string
+}
+
+interface Payment {
+    id: string
+    customers?: { name?: string; email?: string }
+    payment_method: string
+    amount: number
+    status: string
+    created_at: string
+}
+
+interface Product {
+    name: string
+    sku?: string
+    description?: string
+    stock_quantity: number
+    unit?: string
+    price: number
+}
+
+type ReportData = Order[] | Payment[] | Product[]
+
+export const exportSalesReportToExcel = (data: ReportData, reportType: string) => {
     const workbook = XLSX.utils.book_new()
 
-    let excelData: any[] = []
+    let excelData: Record<string, unknown>[] = []
     let filename = ''
 
     switch (reportType) {
         case 'sales':
-            excelData = data.map(order => ({
+            excelData = (data as Order[]).map(order => ({
                 'Order ID': order.id,
                 'Customer Name': order.customers?.name || 'N/A',
                 'Customer Email': order.customers?.email || 'N/A',
@@ -165,7 +194,7 @@ export const exportSalesReportToExcel = (data: any[], reportType: string) => {
             break
 
         case 'payments':
-            excelData = data.map(payment => ({
+            excelData = (data as Payment[]).map(payment => ({
                 'Payment ID': payment.id,
                 'Customer Name': payment.customers?.name || 'N/A',
                 'Customer Email': payment.customers?.email || 'N/A',
@@ -179,7 +208,7 @@ export const exportSalesReportToExcel = (data: any[], reportType: string) => {
             break
 
         case 'inventory':
-            excelData = data.map(product => ({
+            excelData = (data as Product[]).map(product => ({
                 'Product Name': product.name,
                 'SKU': product.sku || 'N/A',
                 'Description': product.description || 'N/A',
@@ -196,7 +225,7 @@ export const exportSalesReportToExcel = (data: any[], reportType: string) => {
 
     // Auto-size columns
     const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1')
-    const columnWidths: any[] = []
+    const columnWidths: { wch: number }[] = []
 
     for (let col = range.s.c; col <= range.e.c; col++) {
         let maxWidth = 10

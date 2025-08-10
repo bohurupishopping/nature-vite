@@ -4,12 +4,11 @@ import {
   Users, 
   IndianRupee, 
   Package, 
-  TrendingUp, 
   AlertTriangle,
-  Calendar,
   MapPin,
   ArrowUpRight,
-  ArrowDownRight
+  ArrowDownRight,
+  LucideIcon
 } from 'lucide-react'
 import { 
   getRecentOrders, 
@@ -17,6 +16,42 @@ import {
   getLowStockItems, 
   getRecentMarketVisits 
 } from '../integrations/supabase/client'
+
+interface StatCardProps {
+  icon: LucideIcon
+  title: string
+  value: string | number
+  subtitle?: string
+  trend?: number
+  color?: 'blue' | 'amber' | 'red' | 'green'
+}
+
+interface Order {
+  total_amount: number
+  status: string
+  customers?: { name: string }
+  profiles?: { first_name: string; last_name: string }
+}
+
+interface CustomerDue {
+  customer_name: string
+  total_due: number
+}
+
+interface LowStockItem {
+  name: string
+  description?: string
+  stock_quantity: number
+  unit: string
+  price: number
+}
+
+interface MarketVisit {
+  visit_date: string
+  notes?: string
+  customers?: { name: string }
+  profiles?: { first_name: string; last_name: string }
+}
 
 export default function Dashboard() {
   const [dashboardData, setDashboardData] = useState({
@@ -53,7 +88,7 @@ export default function Dashboard() {
     fetchDashboardData()
   }, [])
 
-  const StatCard = ({ icon: Icon, title, value, subtitle, trend, color = 'blue' }: any) => (
+  const StatCard = ({ icon: Icon, title, value, subtitle, trend, color = 'blue' }: StatCardProps) => (
     <div className="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 hover:shadow-lg transition-all duration-300">
       <div className="flex items-start justify-between">
         <div className="flex-1">
@@ -99,8 +134,8 @@ export default function Dashboard() {
     )
   }
 
-  const totalRevenue = dashboardData.recentOrders.reduce((sum: number, order: any) => sum + order.total_amount, 0)
-  const totalDues = dashboardData.customerDues.reduce((sum: number, due: any) => sum + due.total_due, 0)
+  const totalRevenue = dashboardData.recentOrders.reduce((sum: number, order: Order) => sum + order.total_amount, 0)
+  const totalDues = dashboardData.customerDues.reduce((sum: number, due: CustomerDue) => sum + due.total_due, 0)
 
   return (
     <div className="space-y-8">
@@ -159,7 +194,7 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="space-y-4">
-            {dashboardData.recentOrders.slice(0, 5).map((order: any, index) => (
+            {dashboardData.recentOrders.slice(0, 5).map((order: Order, index) => (
               <div key={index} className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl hover:bg-gray-100 transition-colors">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-500 rounded-2xl flex items-center justify-center">
@@ -206,7 +241,7 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="space-y-4">
-            {dashboardData.customerDues.slice(0, 5).map((due: any, index) => (
+            {dashboardData.customerDues.slice(0, 5).map((due: CustomerDue, index) => (
               <div key={index} className="flex items-center justify-between p-4 bg-amber-50 rounded-2xl">
                 <div className="flex items-center space-x-4">
                   <div className="w-12 h-12 bg-gradient-to-br from-amber-500 to-orange-500 rounded-2xl flex items-center justify-center">
@@ -244,7 +279,7 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {dashboardData.lowStockItems.map((item: any, index) => (
+            {dashboardData.lowStockItems.map((item: LowStockItem, index) => (
               <div key={index} className="bg-white p-6 rounded-2xl border border-red-200 hover:shadow-md transition-shadow">
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="font-bold text-gray-900">{item.name}</h3>
@@ -284,7 +319,7 @@ export default function Dashboard() {
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {dashboardData.marketVisits.slice(0, 6).map((visit: any, index) => (
+          {dashboardData.marketVisits.slice(0, 6).map((visit: MarketVisit, index) => (
             <div key={index} className="p-6 bg-green-50 rounded-2xl border border-green-200 hover:bg-green-100 transition-colors">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center space-x-3">

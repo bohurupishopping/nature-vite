@@ -3,6 +3,9 @@ import { BrowserRouter as Router } from 'react-router-dom'
 import AuthPage from './components/AuthPage'
 import Dashboard from './components/Dashboard'
 import Reports from './components/Reports'
+import Customers from './components/Customers'
+import Products from './components/Products'
+import PriceLists from './components/PriceLists'
 import Layout from './components/Layout'
 import { getCurrentUser } from './integrations/supabase/client'
 
@@ -60,6 +63,12 @@ function App() {
     switch (currentPage) {
       case 'dashboard':
         return <Dashboard />
+      case 'customers':
+        return <Customers />
+      case 'products':
+        return <Products />
+      case 'price-lists':
+        return <PriceLists />
       case 'reports':
         return <Reports />
       default:
